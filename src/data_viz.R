@@ -33,20 +33,20 @@ data <- data[-which(has.neg), ]
 data <- data[data$V144 < 100, ]
 
 # keep top 10 religions and group the rest into other 
-top_nine <- sort(rownames(as.matrix(sort(table(data$V144), decreasing=TRUE)[1:10])))
-other <- lapply(data$V144, function(row) !(row %in% top_nine))
+top_ten <- sort(rownames(as.matrix(sort(table(data$V144), decreasing=TRUE)[1:10])))
+other <- lapply(data$V144, function(row) !(row %in% top_ten))
 
 # change the religion codes
-data[data$V144 == 12] <- 1
-data[data$V144 == 31] <- 2
-data[data$V144 == 49] <- 3
-data[data$V144 == 52] <- 4
-data[data$V144 == 53] <- 5
-data[data$V144 == 62] <- 6
-data[data$V144 == 64] <- 7
-data[data$V144 == 75] <- 8
-data[data$V144 == 76] <- 9
-data[which(!(data$V144 %in% top_nine)), ] <- 10
+data[which(!(data$V144 %in% top_ten)), ] <- 10
+data[data$V144 == 12,] <- 1
+data[data$V144 == 31,] <- 2
+data[data$V144 == 49,] <- 3
+data[data$V144 == 52,] <- 4
+data[data$V144 == 53,] <- 5
+data[data$V144 == 62,] <- 6
+data[data$V144 == 64,] <- 7
+data[data$V144 == 75,] <- 8
+data[data$V144 == 76,] <- 9
 
 # remove religious denomination
 data_without <- data[, -which(names(data) %in% c("V144"))]
