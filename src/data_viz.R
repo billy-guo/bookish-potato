@@ -1,6 +1,7 @@
 library(tidyverse)
 library(ggfortify)
 library(ggplot2)
+library(Rtsne)
 
 #################
 # Data cleaning #
@@ -37,24 +38,29 @@ top_ten <- sort(rownames(as.matrix(sort(table(data$V144), decreasing=TRUE)[1:10]
 other <- lapply(data$V144, function(row) !(row %in% top_ten))
 
 # change the religion codes
-data[which(!(data$V144 %in% top_ten)), ] <- 10
-data[data$V144 == 12,] <- 1
-data[data$V144 == 31,] <- 2
-data[data$V144 == 49,] <- 3
-data[data$V144 == 52,] <- 4
-data[data$V144 == 53,] <- 5
-data[data$V144 == 62,] <- 6
-data[data$V144 == 64,] <- 7
-data[data$V144 == 75,] <- 8
-data[data$V144 == 76,] <- 9
+data[which(!(data$V144 %in% top_ten)), which(colnames(data)=="V144")] <- 9
+data[data$V144 == 12, which(colnames(data)=="V144")] <- 1
+data[data$V144 == 31, which(colnames(data)=="V144")] <- 2
+data[data$V144 == 49, which(colnames(data)=="V144")] <- 3
+data[data$V144 == 52, which(colnames(data)=="V144")] <- 4
+data[data$V144 == 53, which(colnames(data)=="V144")] <- 5
+data[data$V144 == 62, which(colnames(data)=="V144")] <- 9
+data[data$V144 == 64, which(colnames(data)=="V144")] <- 7
+data[data$V144 == 75, which(colnames(data)=="V144")] <- 8
 
 # remove religious denomination
-data_without <- data[, -which(names(data) %in% c("V144"))]
+data_without <- data[, 1:9]
+no_dup_data <- unique(data)
+no_dup_data_without <- unique(as.matrix(no_dup_data[1:9]))
 
 #######
 # EDA #
 #######
-pca <- prcomp(data_without)
+pca <- prcomp(data_without) 
 autoplot(pca, data=data, colour="V144")
+
+tsne <- Rtsne(no_dup_data_without,pca=FALSE,perplexity=30)
+plot(tsne$Y, col=no_dup_data$V144, asp=1)
+
 
 

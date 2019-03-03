@@ -1,0 +1,133 @@
+\documentclass{article}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+\usepackage[final]{nips_2017}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{graphicx}
+\usepackage{subfig}
+
+%\usepackage[nonatbib]{nips_2016}
+
+\bibliographystyle{apacite}
+
+\title{Cross-Religious Denomination Analysis}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+	William Guo\\
+	Department of Computer Science, Economics \\
+	\texttt{wrg2@rice.edu} \\
+}
+
+\begin{document}
+	\maketitle
+	
+	\begin{abstract}
+	One may find the fact that constituents of different religions are, on the whole, very similar in their views of religion and ethics. Using this as a jumping-off point, I plan to examine how groups of differing levels of religiosity emerge within a single denomination and compare the similarity of these groups across denominations. In particular, I am interested in seeing how socioeconomic factors impact people of different denominations.
+	\end{abstract}
+	
+	\section{Introduction}
+	My initial interest stemmed from class discussion, where the point that conventional measures of religiosity, particularly religious service attendance, is increasingly misleading. For example, the unaffiliated population has no religious service to attend, but may practice a set of ethics as fervently as any conventionally religious person. And just as postulated in Weber's secularization hypothesis, \cite{inc_secularization} note that the unaffiliated population has been growing. Furthermore, even within the affiliated population, church attendance has been decreasing as secular opportunities take precedence and other factors, such as the Internet, allow believers to practice their faith in unconventional ways not captured by this metric. Finally, the church-like and sect-like denominations \cite{sects} introduced helped crystallize my initial exploratory data analysis because of how he sought to find patterns in the data not captured by conventional labels.
+	\\
+	\\
+	To better capture the ethical and religious views of the changing American landscape, I plan to focus less on religious denomination itself and more on how
+	people view others of similar or different religious beliefs through cluster analysis. However, I plan to focus on how people deviate from the accepted teachings of their religion and how it may be fueled by socioeconomic conditions.
+	
+	\section{Data Analysis}
+	To reaffirm work done by \cite{relig_convert} on conversion rates across different religious denominations, I ran t-SNE on nine hand-picked survey questions\footnote{1) Importance in life: religion 2) Would not like to have as neighbors: People of a different religion 3) Tradition is important to this person; to follow the customs handed down by one’s religion or family 4) How much you trust: People of another religion 5) Meaning of religion: To follow religious norms and ceremonies vs To do good to other people 6) Meaning of religion: To make sense of life after death vs To make sense of life in this world 7) Whenever science and religion conflict, religion is always right 8) The only acceptable religion is my religion 9) People who belong to different religions are probably just as moral as those who belong to mine.} from the World Value Survey regarding their views on their own religion and how they felt about people of different religions. Looking at the ten largest religions among survey respondents, we find that religious denomination has little bearing on how respondents felt about their own religion, felt about other religious denominations and their believers, and their individual purpose of believing.
+	
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=0.7\textwidth]{"Images/tsne_relig_denom".png}
+		\caption{t-SNE plot of religious and ethical opinions clustered by denomination}
+	\end{figure}
+
+	\section{Variables of interest}
+	I used the World Values Survey to create Figure 1, but I plan on using the General Social Survey (GSS) to perform the actual study. While this means my results cannot be extended to countries outside the US, I felt the questions in the WVS did not provide enough data to warrant further investigation and analysis.
+	\\
+	\\
+	With the following variables, I plan on investigating how much socioeconomic factors, particularly income, affect our religious and ethical views and whether these effects cut through conventional denominational labels.
+	
+	\begin{table}[h]
+	\caption{Exogenous controls}
+	\label{gss-controls}
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		Variable     & Description  \\
+		\midrule
+		age & Age of respondent \\
+		educ & Highest level of education respondent attained \\
+		region & Region of interview \\
+		income & Total family income \\
+		\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\begin{table}[h]
+		\caption{Variables of interest}
+		\label{gss-vars}
+		\centering
+		\begin{tabular}{lll}
+			\toprule
+			Variable     & Description  \\
+			\midrule
+			relig & Religious preference \\
+			relig16 & Religion in which one was raised \\ 
+			attend & How often one attends religious services \\
+			switched & Has one ever had a different religion \\
+			mywaygod & Whether one has one's own way of connecting with \\
+				     & God without churches or religious services. \\
+			howrel & How religious is respondent \\
+			fund & How fundamentalist is respondent currently \\
+			permoral & Respondent agrees that morality a personal matter \\
+			marhomo & Homosexuals should have right to marry \\
+			natsoc & How much do you agree with the current spending on Social Security? \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\newpage
+	\nocite{*}
+	\bibliography{references}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
