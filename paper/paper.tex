@@ -70,19 +70,19 @@
 			\toprule
 			Variable code & Description  \\
 			\midrule
-			V9 & Importance in life: religion \\
-			V41 & Would not like to have as neighbors: People of a different religion \\
-			V70 & It is important to this person to think up new ideas and be creative; to do things one’s own way \\
-			V73 & It is important to this person to have a good time; to “spoil” oneself \\
-			V78 & Looking after the environment is important to this person; to care for nature and save life resources \\
-			V79 & Tradition is important to this person; to follow the customs handed down by one’s religion or family \\
-			V106 & How much you trust: People of another religion \\
-			V150 & Meaning of religion: To follow religious norms and ceremonies vs To do good to other people \\
-			V151 & Meaning of religion: To make sense of life after death vs To make sense of life in this world \\
-			V152 & How important is God in your life \\
-			V153 & Whenever science and religion conflict, religion is always right \\
-			V154 & The only acceptable religion is my religion \\
-			V156 & People who belong to different religions are probably just as moral as those who belong to mine \\
+			\texttt{V9} & Importance in life: religion \\
+			\texttt{V41} & Would not like to have as neighbors: People of a different religion \\
+			\texttt{V70} & It is important to this person to think up new ideas and be creative; to do things one’s own way \\
+			\texttt{V73} & It is important to this person to have a good time; to “spoil” oneself \\
+			\texttt{V78} & Looking after the environment is important to this person; to care for nature and save life resources \\
+			\texttt{V79} & Tradition is important to this person; to follow the customs handed down by one’s religion or family \\
+			\texttt{V106} & How much you trust: People of another religion \\
+			\texttt{V150} & Meaning of religion: To follow religious norms and ceremonies vs To do good to other people \\
+			\texttt{V151} & Meaning of religion: To make sense of life after death vs To make sense of life in this world \\
+			\texttt{V152} & How important is God in your life \\
+			\texttt{V153} & Whenever science and religion conflict, religion is always right \\
+			\texttt{V154} & The only acceptable religion is my religion \\
+			\texttt{V156} & People who belong to different religions are probably just as moral as those who belong to mine \\
 			\bottomrule
 		\end{tabular}
 	\end{table}
@@ -194,12 +194,13 @@
 
 	Perhaps due to the huge sample size, we interestingly see that all of our coefficients are significant. In particular, education seems to have a strongly positive correlation with values of \texttt{outer}.\footnote{The scale of the original variables mapped lower integer values to lower levels of religiosity, so education here seems to be correlated with lower religiosity}. Age is also weakly positively correlated, which confirms our previous discussion about how people tend to become more secular as they enter their adulthood and become more religious as they move towards retirement.
 	
-	Interestingly enough, those who lean ``libertarian'' and believe competition is good for the overall marketplace are also more secular, while those who believe in more income inequality are more religious. Considering the current political climate of the US, I was expecting the signs on \texttt{libertarianism} and \texttt{income\_eq} to be flipped, but since the data is over the entire world, it is not surprising to see such a result.
-	
-	\section{Takeaways}
+	Interestingly enough, those who lean ``libertarian'' and believe competition is good for the overall marketplace are also more secular, while those who believe in more income inequality are more religious. Considering the current political climate of the US, I was expecting the signs on \texttt{libertarianism} and \texttt{income\_eq} to be flipped, but since the data is over the entire world, it is not surprising to see such a result. Another contradictory result lies in the coefficient on the \texttt{sex} variable, which indicates that women are more secular than men. Given our first assignment was based on the \textit{a priori} assumption that women attended church more often (and were therefore more religious), I was a little surprised by the result. 
 	
 	\section{Conclusion}
+	My regression results mostly confirm common ideas we have discussed throughout the semester: age is loosely positively correlated with secularism and education is strongly so. However, like I mentioned previously, since the first component itself was not very representative of the variables I named, I do not have much confidence in any of my results, whether they confirmed or contradicted my \textit{a priori} beliefs regarding one's personal religiosity.
 	
+	Given the variables I introduced and subsequently excised, ethical questions do not seem like a good way to measure religiosity. While ethics and religion are naturally intertwined, the relationship captured in the WVS data was not strong enough to make including the ethical questions a worthwhile addition. The entire set of variables fail both the eye test of making distinct clusters as well as capturing as much variance as the good set of variables. That being said, the good set of variables also fails to truly capture enough variance to be meaningful, which could point to problems in the data itself. Also, while I had initially thought that religious denomination would create few or no clusters, they ended up clustering in somewhat reasonable ways. Given that the data used is a huge sample drawn from groups all across the world, one could argue that regional effects might have washed out. 	However, having never used nonlinear PCA/MCA or t-SNE in practical applications, I am happy that I got the chance to put the algorithms to use and unpack common issues that we discussed in class but never examined in depth.
+		
 	\newpage
 	\nocite{*}
 	\bibliography{references}
