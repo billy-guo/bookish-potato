@@ -83,7 +83,6 @@
 			V153 & Whenever science and religion conflict, religion is always right \\
 			V154 & The only acceptable religion is my religion \\
 			V156 & People who belong to different religions are probably just as moral as those who belong to mine \\
-			V211 & How proud of nationality \\
 			\bottomrule
 		\end{tabular}
 	\end{table}
@@ -100,52 +99,102 @@
 	
 	As one would expect, experimenting with different combinations of these thirteen questions led to varying levels of separation. The combination of more similar variables, and conversely the exclusion of the more exotic questions, led to better clustering. More specifically, the questions that asked more direct questions about religiosity led to better clustering, while the questions that dealt with more ambiguous ethical questions led to minimal cluster separation.
 	
-	One could attribute this benefit to the fact that the questions I excluded in the ``best'' t-SNE plot did not adequately measure religiosity\footnote{From the master table of variables, I excluded \texttt{V70} and \texttt{V73}.}, but I also believe the nature of how the questions can be answered could have limited the range of answers the subjects could have given. In the given example, the subject is presented with a choice between two options, whereas the variables that were kept allow the subject to more freely express their personal preference.
+	One could attribute this benefit to the fact that the questions I excluded in the ``best'' t-SNE plot did not adequately measure religiosity,\footnote{From the master table of variables I excluded \texttt{V70} and \texttt{V73}.}, but I also believe the nature of how the questions can be answered could have limited the range of answers the subjects could have given. In the given example, the subject is presented with a choice between two options, whereas the variables that were kept allow the subject to more freely express their personal preference.
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{"Images/no_v151".png}
+		\caption{Plot of master variable list excluding \texttt{V151}}
+	\end{figure}
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{"Images/no_v70_v73_v151".png}
+		\caption{Plot of master variable list excluding \texttt{V151}, \texttt{V70}, and \texttt{V73}}
+	\end{figure}
+
+	With these two plots, we can see how the general religious denomination clusters are still mostly the same, but there is a degree of separation in the second plot not found in the first. 
 
 	\section{Dimensionality reduction}
-	Since t-SNE is a nonlinear visualization technique, it would not make sense to perform PCA, which maps high-dimensional data linearly into a lower-dimensional space. PCA is naturally incompatible with categorical data as there is no concrete scale with which to measure the strength of feeling towards certain questions. Instead, multiple correspondence analysis (MCA) is performed. It is possible to binarize each of a variable's answer choices and perform PCA on the modified matrix, but doing this procedure by hand does not make much sense when an automated alternative exists.
-
-	\section{Variables of interest}
-
+	While one would think that using the dimensions of the t-SNE calculations for some regression model would be a natural next step, they are unfortunately unusable. Due to the stochastic nature of the algorithm, there is no deterministic mapping between the high-dimensional space the algorithm takes and the 2D/3D space it projects the final plot in. Therefore, while the results of Section 2 are descriptive, we cannot use them for any kind of serious inference. Instead, I used the variables that led to the maximal separation in the dimensionality reduction algorithm of my choice, which I explain in the next passage.
 	
-%	\begin{table}[h]
-%	\caption{Exogenous controls}
-%	\label{gss-controls}
-%	\centering
-%	\begin{tabular}{lll}
-%		\toprule
-%		Variable     & Description  \\
-%		\midrule
-%		age & Age of respondent \\
-%		educ & Highest level of education respondent attained \\
-%		region & Region of interview \\
-%		income & Total family income \\
-%		\bottomrule
-%		\end{tabular}
-%	\end{table}
+	Since t-SNE is a nonlinear visualization technique, it would not make sense to perform PCA, which maps high-dimensional data linearly into a lower-dimensional space. PCA is naturally incompatible with categorical data as there is no concrete scale with which to measure the strength of feeling towards certain questions. Instead, multiple correspondence analysis (MCA) is performed. It is possible to binarize each of a variable's answer choices and perform PCA on the modified matrix, but doing this procedure by hand does not make much sense when an automated alternative exists. The following represents the variance captured by pushing the aforementioned variables through MCA. I have also included the same for the variables that appeared in the control t-SNE plot.
 	
-	\begin{table}[h]
-		\caption{Variables of interest}
-		\label{gss-vars}
+	\begin{figure}[h]
 		\centering
-		\begin{tabular}{lll}
-			\toprule
-			Variable     & Description  \\
-			\midrule
-			relig & Religious preference \\
-			relig16 & Religion in which one was raised \\ 
-			attend & How often one attends religious services \\
-			switched & Has one ever had a different religion \\
-			mywaygod & Whether one has one's own way of connecting with \\
-				     & God without churches or religious services. \\
-			howrel & How religious is respondent \\
-			fund & How fundamentalist is respondent currently \\
-			permoral & Respondent agrees that morality a personal matter \\
-			marhomo & Homosexuals should have right to marry \\
-			natsoc & How much do you agree with the current spending on Social Security? \\
-			\bottomrule
-		\end{tabular}
-	\end{table}
+		\includegraphics[width=0.7\textwidth]{"Images/good_scree".png}
+		\caption{Amount of variance captured by the components of the good set of variables}
+	\end{figure}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\textwidth]{"Images/bad_scree".png}
+		\caption{Amount of variance captured by the components of the control set}
+	\end{figure}
+	
+	Looking at these graphs, we can confirm our previous intuition as the amount of variance explained by the first two components is greater for our smaller, more religion-oriented variables. With this in mind, we can use our chosen set of variables for model inference with confidence.
+	
+	\section{Regression model}
+	Looking at the biplot that results from running MCA on the good variable set, we see that some variables, namely \texttt{V153} and \texttt{V154}, are mostly unexplained by either component individually, reflecting a failure to adequately explain the variance in the data. This result is not unexpected, however; with \texttt{n=55140} and a relatively low number of religiosity measures, the data is most likely too sparse. As such, we will treat the regressions as more of a thought exercise.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{"Images/good_biplot".png}
+		\caption{Biplot clusters based on how much each dimension explains the given variable}
+	\end{figure}
+
+	I will represent the first component as the subject's personal beliefs about members of other religions (now referred to as \texttt{outer}). We can see a small cluster of a few variables, namely \texttt{V150}, \texttt{V106}, \texttt{41}, and \texttt{78}. What these variables have in common is the fact that they all ask the subject about things external to their own personal decision to belong in a certain faith, whether it is to care for the environment around them or judge members of other religions more critically.\footnote{Because the second dimension captures less variance than the first and does not have any noticeable variable clusters, I will forego including it in our model.}
+	
+	\newpage
+	\section{Regression results}
+	To clarify, the \texttt{libertarianism} variable was a question that asked the subject to measure their feelings between the sentiment that the government should take more responsibility to ensure that everyone is provided for or that people should take personal responsibility. \texttt{income\_eq} represents their feelings on whether incomes should be made more equal, and \texttt{competition} asks whether competition is good or harmful. The rest of the variables, e.g. \texttt{age}, \texttt{sex}, \texttt{educ}, all represent what their names actually mean.
+	
+	\begin{table}[!htbp] \centering 
+		\caption{} 
+		\label{} 
+		\begin{tabular}{@{\extracolsep{5pt}}lc} 
+			\\[-1.8ex]\hline 
+			\hline \\[-1.8ex] 
+			& \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
+			\cline{2-2} 
+			\\[-1.8ex] & \texttt{outer} \\ 
+			\hline \\[-1.8ex] 
+			\texttt{age} & 0.003$^{***}$ \\ 
+			& (0.0001) \\ 
+			& \\ 
+			\texttt{sex} & $-$0.016$^{***}$ \\ 
+			& (0.004) \\ 
+			& \\ 
+			\texttt{educ} & 0.054$^{***}$ \\ 
+			& (0.001) \\ 
+			& \\ 
+			\texttt{income\_eq} & $-$0.031$^{***}$ \\ 
+			& (0.001) \\ 
+			& \\ 
+			\texttt{libertarianism} & 0.019$^{***}$ \\ 
+			& (0.001) \\ 
+			& \\ 
+			\texttt{competition} & 0.020$^{***}$ \\ 
+			& (0.001) \\ 
+			& \\ 
+			Constant & $-$0.422$^{***}$ \\ 
+			& (0.012) \\ 
+			& \\ 
+			\hline \\[-1.8ex] 
+			Observations & 55,140 \\ 
+			R$^{2}$ & 0.107 \\ 
+			Adjusted R$^{2}$ & 0.107 \\ 
+			Residual Std. Error & 0.506 (df = 55133) \\ 
+			F Statistic & 1,099.744$^{***}$ (df = 6; 55133) \\ 
+			\hline 
+			\hline \\[-1.8ex] 
+			\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+		\end{tabular} 
+	\end{table} 
+
+	Perhaps due to the huge sample size, we interestingly see that all of our coefficients are significant. In particular, education seems to have a strongly positive correlation with values of \texttt{outer}.\footnote{The scale of the original variables mapped lower integer values to lower levels of religiosity, so education here seems to be correlated with lower religiosity}. Age is also weakly positively correlated, which confirms our previous discussion about how people tend to become more secular as they enter their adulthood and become more religious as they move towards retirement.
+	
+	Interestingly enough, those who lean ``libertarian'' and believe competition is good for the overall marketplace are also more secular, while those who believe in more income inequality are more religious. Considering the current political climate of the US, I was expecting the signs on \texttt{libertarianism} and \texttt{income\_eq} to be flipped, but since the data is over the entire world, it is not surprising to see such a result.
 	
 	\section{Takeaways}
 	
