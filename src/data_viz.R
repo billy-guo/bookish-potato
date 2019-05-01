@@ -85,66 +85,30 @@ data <- data[!(data$V211 == 5), ]
 # remove religious denomination
 data_without <- data[, 1:14]
 
-## sort the data into bins ##
-dummy_data <- data
-
-# # religion importance in life
-# dummy_data[dummy_data$V9 > 2, which(colnames(dummy_data)=="V9")] <- 0
-# dummy_data[dummy_data$V9 <= 2, which(colnames(dummy_data)=="V9")] <- 1
-# 
-# # neighbors of a different religion
-# dummy_data[dummy_data$V41 == 2, which(colnames(dummy_data)=="V41")] <- 0
-# 
-# # V79: Tradition is important to this person; to follow the customs handed down by one’s religion or family
-# dummy_data[dummy_data$V79 >= 3, which(colnames(dummy_data)=="V79")] <- 1
-# dummy_data[dummy_data$V79 < 3, which(colnames(dummy_data)=="V79")] <- 0
-# 
-# # V106: How much you trust: People of another religion
-# dummy_data[dummy_data$V106 >= 2, which(colnames(dummy_data)=="V106")] <- 0
-# dummy_data[dummy_data$V106 < 2, which(colnames(dummy_data)=="V106")] <- 1
-# 
-# # V150: Meaning of religion: To follow religious norms and ceremonies vs To do good to other people
-# dummy_data <- dummy_data[!(dummy_data$V150 > 2), ]
-# dummy_data[dummy_data$V150 == 2, which(colnames(dummy_data)=="V150")] <- 0
-# 
-# # V151: Meaning of religion: To make sense of life after death vs To make sense of life in this world
-# dummy_data <- dummy_data[!(dummy_data$V151 > 1), ]
-# dummy_data[dummy_data$V151 == 2, which(colnames(dummy_data)=="V151")] <- 0
-# 
-# # V153: Whenever science and religion conflict, religion is always right
-# dummy_data[dummy_data$V153 >= 2, which(colnames(dummy_data)=="V153")] <- 0
-# dummy_data[dummy_data$V153 < 2, which(colnames(dummy_data)=="V153")] <- 1
-# 
-# # V154: The only acceptable religion is my religion
-# dummy_data[dummy_data$V154 >= 2, which(colnames(dummy_data)=="V154")] <- 0
-# dummy_data[dummy_data$V154 < 2, which(colnames(dummy_data)=="V154")] <- 1
-# 
-# # V156: People who belong to different religions are probably just as moral as those who belong to mine
-# dummy_data[dummy_data$V156 >= 2, which(colnames(dummy_data)=="V156")] <- 0
-# dummy_data[dummy_data$V156 < 2, which(colnames(dummy_data)=="V156")] <- 1
-# 
-# # V70: It is important to this person to think up new ideas and be creative; to do things one’s own way
-# dummy_data[dummy_data$V70 <= 3, which(colnames(dummy_data)=="V70")] <- 1
-# dummy_data[dummy_data$V70 > 3, which(colnames(dummy_data)=="V70")] <- 0
-# 
-# # V211: How proud of nationality
-# dummy_data <- dummy_data[!(dummy_data$V211 == 5), ]
-# dummy_data[dummy_data$V211 <= 2, which(colnames(dummy_data)=="V211")] <- 1
-# dummy_data[dummy_data$V211 > 2, which(colnames(dummy_data)=="V211")] <- 0
-# 
-# # V73: It is important to this person to have a good time; to “spoil” oneself
-# dummy_data[dummy_data$V73 <= 3, which(colnames(dummy_data)=="V73")] <- 1
-# dummy_data[dummy_data$V73 > 3, which(colnames(dummy_data)=="V73")] <- 0
-# 
-# # V78: Looking after the environment is important to this person; to care for nature and save life resources
-# dummy_data[dummy_data$V78 <= 3, which(colnames(dummy_data)=="V78")] <- 1
-# dummy_data[dummy_data$V78 > 3, which(colnames(dummy_data)=="V78")] <- 0
-# 
-# dummy_data_without <- dummy_data[, 1:13]
-
 #######
 # EDA #
 #######
+
+### t-SNE ###
+tsne_new <- Rtsne(data, check_duplicates=FALSE,pca=FALSE,perplexity=30)
+tsne_new_without <- Rtsne(data_without[1:13], check_duplicates=FALSE,pca=FALSE,perplexity=30)
+tsne_new_without <- Rtsne(data_without[c(1:2, 5:13)], check_duplicates=FALSE,pca=FALSE,perplexity=30)
+tsne_new_without <- Rtsne(data_without[c(1:2, 5:8, 10:13)], check_duplicates=FALSE,pca=FALSE,perplexity=30)
+
+# ggplot stuff
+ggplot(data, aes(x=tsne_new$Y[,1], y=tsne_new$Y[,2], color=factor(data$V144))) + geom_point() +
+  scale_color_manual(name="Religious denomination",
+                     labels=c("None","Buddhist","Hindu","Muslim","Orthodox","Other","Armenian Apostolic Church","Protestant",
+                              "Roman Catholic","Sunni"),
+                     values=c(wes_palette("BottleRocket2"), wes_palette("Royal2")))
+
+ggplot(data_without, aes(x=tsne_new_without$Y[,1], y=tsne_new_without$Y[,2], color=factor(data$V144))) + geom_point() +
+  scale_color_manual(name="Religious denomination",
+                     labels=c("None","Buddhist","Hindu","Muslim","Orthodox","Other","Armenian Apostolic Church","Protestant",
+                              "Roman Catholic","Sunni"),
+                     values=c(wes_palette("BottleRocket2"), wes_palette("Royal2"))) +
+  ggtitle("t-SNE visualization of our variables of interest") + theme(plot.title = element_text(hjust = 0.5)) + 
+  xlab("Dimension 1") + ylab("Dimension 2")
 
 ### PCA ###
 # no preprocessing
@@ -186,23 +150,4 @@ model2 <- ivreg(ind$coord[, 2] ~ V144 +  V96 + V98 + V99 | .-V96 + V239, data=da
 
 # summary
 stargazer(model1, model2, type="latex")
-
-### t-SNE ###
-tsne_new <- Rtsne(data, check_duplicates=FALSE,pca=FALSE,perplexity=30)
-tsne_new_without <- Rtsne(data_without, check_duplicates=FALSE,pca=FALSE,perplexity=30)
-
-# ggplot stuff
-ggplot(data, aes(x=tsne_new$Y[,1], y=tsne_new$Y[,2], color=factor(data$V144))) + geom_point() +
-  scale_color_manual(name="Religious denomination",
-                     labels=c("None","Buddhist","Hindu","Muslim","Orthodox","Other","Armenian Apostolic Church","Protestant",
-                              "Roman Catholic","Sunni"),
-                     values=c(wes_palette("BottleRocket2"), wes_palette("Royal2")))
-
-ggplot(data_without, aes(x=tsne_new_without$Y[,1], y=tsne_new_without$Y[,2], color=factor(data$V144))) + geom_point() +
-  scale_color_manual(name="Religious denomination",
-                     labels=c("None","Buddhist","Hindu","Muslim","Orthodox","Other","Armenian Apostolic Church","Protestant",
-                              "Roman Catholic","Sunni"),
-                     values=c(wes_palette("BottleRocket2"), wes_palette("Royal2"))) +
-  ggtitle("t-SNE visualization of our variables of interest") + theme(plot.title = element_text(hjust = 0.5)) + 
-  xlab("Dimension 1") + ylab("Dimension 2")
 

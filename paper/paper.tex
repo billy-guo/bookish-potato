@@ -44,7 +44,13 @@
 	\end{abstract}
 	
 	\section{Introduction}
-	My initial interest stemmed from class discussion, where the point that conventional measures of religiosity, particularly religious service attendance, is increasingly misleading. For example, the unaffiliated population has no religious service to attend, but may practice a set of ethics as fervently as any conventionally religious person. And just as postulated in Weber's secularization hypothesis, \cite{inc_secularization} note that the unaffiliated population has been growing. Furthermore, even within the affiliated population, church attendance has been decreasing as secular opportunities take precedence and other factors, such as the Internet, allow believers to practice their faith in unconventional ways not captured by this metric. Finally, the church-like and sect-like denominations \cite{sects} introduced helped crystallize my initial exploratory data analysis because of how he sought to find patterns in the data not captured by conventional labels.
+	My initial interest stemmed from class discussion, where the point that conventional measures of religiosity, particularly religious service attendance, is increasingly misleading. For example, the unaffiliated population has no religious service to attend, but may practice a set of ethics as fervently as any conventionally religious person. And just as postulated in Weber's secularization hypothesis, \cite{inc_secularization} note that the unaffiliated population has been growing. Furthermore, even within the affiliated population, church attendance has been decreasing as secular opportunities take precedence and other factors, such as the Internet, allow believers to practice their faith in unconventional ways not captured by this metric. 
+	\\
+	\\
+	Other works in this literature, namely \cite{oversample_survey}, have also observed discrepancies in the behavior of church-goers relative to their non-attending counterparts. Woodberry in particular focuses on the fact that church-goers are more cooperative and easier to extract answers from than those who do not attend. While we cannot correct this problem if it is the case, he proposes changing the loss function so that the answers between the two disjoint groups are weighted differently. My main takeaway, however, is the fact that current religiosity measures are not adequate to make the generalizations that people do with them.
+	\\
+	\\
+	Finally, the church-like and sect-like denominations \cite{sects} introduced helped crystallize my initial exploratory data analysis because of how he sought to find patterns in the data not captured by conventional labels.
 	\\
 	\\
 	To better capture the ethical and religious views of the changing American landscape, I focused less on religious denomination itself and more on how
@@ -54,38 +60,69 @@
 	I also tackled the problem of inadequate measures of religiosity by synthesizing religiosity variables that each tackled different aspects of religiosity while remaining topical. By doing so, I hoped to create a religiosity measure that addressed most of the shortcomings of each individual measure.
 	
 	\section{Data Analysis}
-	To reaffirm work done by \cite{relig_convert} on conversion rates across different religious denominations, I ran t-SNE on nine hand-picked survey questions\footnote{ 1) Importance in life: religion 2) Would not like to have as neighbors: People of a different religion 3) Tradition is important to this person; to follow the customs handed down by one’s religion or family 4) How much you trust: People of another religion 5) Meaning of religion: To follow religious norms and ceremonies vs To do good to other people 6) Meaning of religion: To make sense of life after death vs To make sense of life in this world 7) Whenever science and religion conflict, religion is always right 8) The only acceptable religion is my religion 9) People who belong to different religions are probably just as moral as those who belong to mine.} from the World Value Survey regarding their views on their own religion and how they felt about people of different religions. Although my initial conclusion was that there was little clustering based on denomination, a closer examination and a change in variables revealed that there were slight groupings of ostensibly similar religions. For example, we see that the unaffiliated subjects are closely tied to the Buddhist subjects. Since Buddhists do not espouse a belief in a particular deity, they are commonly seen as one of the more secular religious people. Interestingly enough, performing PCA on the data results in somewhat nonsensical patterns, leading me to conclude that the variables have a nonlinear relationship
+	To reaffirm work done by \cite{relig_convert} on conversion rates across different religious denominations, I ran t-SNE on nine hand-picked survey questions from the World Value Survey (the first nine variables listed in the following table) regarding their views on their own religion and how they felt about people of different religions.
 	
-	\begin{figure}[t]
+	\begin{table}[h]
+		\caption{Variables of interest}
+		\label{wvs-vars}
+		\centering
+		\begin{tabular}{lll}
+			\toprule
+			Variable code & Description  \\
+			\midrule
+			V9 & Importance in life: religion \\
+			V41 & Would not like to have as neighbors: People of a different religion \\
+			V70 & It is important to this person to think up new ideas and be creative; to do things one’s own way \\
+			V73 & It is important to this person to have a good time; to “spoil” oneself \\
+			V78 & Looking after the environment is important to this person; to care for nature and save life resources \\
+			V79 & Tradition is important to this person; to follow the customs handed down by one’s religion or family \\
+			V106 & How much you trust: People of another religion \\
+			V150 & Meaning of religion: To follow religious norms and ceremonies vs To do good to other people \\
+			V151 & Meaning of religion: To make sense of life after death vs To make sense of life in this world \\
+			V152 & How important is God in your life \\
+			V153 & Whenever science and religion conflict, religion is always right \\
+			V154 & The only acceptable religion is my religion \\
+			V156 & People who belong to different religions are probably just as moral as those who belong to mine \\
+			V211 & How proud of nationality \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\textwidth]{"Images/tsne_relig_denom".png}
 		\caption{t-SNE plot of religious and ethical opinions clustered by denomination}
 	\end{figure}
 
+ 	Although my initial conclusion was that there was little clustering based on denomination, a closer examination and a change in variables revealed that there were slight groupings of ostensibly similar religions. For example, we see that the unaffiliated subjects are closely tied to the Buddhist subjects. Since Buddhists do not espouse a belief in a particular deity, they are commonly seen as one of the more secular religious people.
+
+	Given these preliminary results, I took the thirteen religiously motivated WVS questions and chose \textit{n} of them for analysis. In doing so, I hoped to find the combination of variables that created the most noticeable separations across denomination. While many of the variables directly asked the subjects about their personal religiosity, I made sure to include questions that would force them to consider how they framed their religious preferences upon others and the world around them. More specifically, I wanted to capture their attitudes towards their personal responsibility in being pious and their attitudes towards how pious others should be and how much their religion should be respected. \footnote{A good example of the latter case would be the question that asked whether the subject believed if people of other religions were just as moral as those in their religion.}
+	
+	As one would expect, experimenting with different combinations of these thirteen questions led to varying levels of separation. The combination of more similar variables, and conversely the exclusion of the more exotic questions, led to better clustering. More specifically, the questions that asked more direct questions about religiosity led to better clustering, while the questions that dealt with more ambiguous ethical questions led to minimal cluster separation.
+	
+	One could attribute this benefit to the fact that the questions I excluded in the ``best'' t-SNE plot did not adequately measure religiosity\footnote{From the master table of variables, I excluded \texttt{V70} and \texttt{V73}.}, but I also believe the nature of how the questions can be answered could have limited the range of answers the subjects could have given. In the given example, the subject is presented with a choice between two options, whereas the variables that were kept allow the subject to more freely express their personal preference.
+
 	\section{Dimensionality reduction}
-	Since t-SNE is a nonlinear visualization technique, it would not make sense to perform PCA, which maps high-dimensional data linearly into a lower-dimensional space. PCA is naturally incompatible with categorical data as there is no concrete scale with which to measure the strength of feeling towards certain questions. Instead, multiple correspondence analysis (MCA) is performed.\footnote{It is possible to binarize each of a variable's answer choices and perform PCA on the modified matrix, but doing this procedure by hand does not make much sense when an automated alternative exists} 
+	Since t-SNE is a nonlinear visualization technique, it would not make sense to perform PCA, which maps high-dimensional data linearly into a lower-dimensional space. PCA is naturally incompatible with categorical data as there is no concrete scale with which to measure the strength of feeling towards certain questions. Instead, multiple correspondence analysis (MCA) is performed. It is possible to binarize each of a variable's answer choices and perform PCA on the modified matrix, but doing this procedure by hand does not make much sense when an automated alternative exists.
 
 	\section{Variables of interest}
-	I used the World Values Survey to create Figure 1, but I plan on using the General Social Survey (GSS) to perform the actual study. While this means my results cannot be extended to countries outside the US, I felt the questions in the WVS did not provide enough data to warrant further investigation and analysis.
-	\\
-	\\
-	With the following variables, I plan on investigating how much socioeconomic factors, particularly income, affect our religious and ethical views and whether these effects cut through conventional denominational labels.
+
 	
-	\begin{table}[h]
-	\caption{Exogenous controls}
-	\label{gss-controls}
-	\centering
-	\begin{tabular}{lll}
-		\toprule
-		Variable     & Description  \\
-		\midrule
-		age & Age of respondent \\
-		educ & Highest level of education respondent attained \\
-		region & Region of interview \\
-		income & Total family income \\
-		\bottomrule
-		\end{tabular}
-	\end{table}
+%	\begin{table}[h]
+%	\caption{Exogenous controls}
+%	\label{gss-controls}
+%	\centering
+%	\begin{tabular}{lll}
+%		\toprule
+%		Variable     & Description  \\
+%		\midrule
+%		age & Age of respondent \\
+%		educ & Highest level of education respondent attained \\
+%		region & Region of interview \\
+%		income & Total family income \\
+%		\bottomrule
+%		\end{tabular}
+%	\end{table}
 	
 	\begin{table}[h]
 		\caption{Variables of interest}
@@ -109,6 +146,10 @@
 			\bottomrule
 		\end{tabular}
 	\end{table}
+	
+	\section{Takeaways}
+	
+	\section{Conclusion}
 	
 	\newpage
 	\nocite{*}
